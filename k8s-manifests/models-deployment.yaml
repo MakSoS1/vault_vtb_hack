@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-app-models
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: secret-app-models
+  template:
+    metadata:
+      labels:
+        app: secret-app-models
+    spec:
+      containers:
+      - name: secret-app-models
+        image: secret-app-models:latest
+        env:
+        - name: CASSANDRA_HOST
+          value: "cassandra.default.svc.cluster.local"  # Замените на ваш кластер Cassandra
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secret-app-models-service
+spec:
+  selector:
+    app: secret-app-models
+  ports:
+    - protocol: TCP
+      port: 9042  # Порт для Cassandra
+      targetPort: 9042
+  type: ClusterIP

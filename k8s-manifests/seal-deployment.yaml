@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-app-seal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secret-app-seal
+  template:
+    metadata:
+      labels:
+        app: secret-app-seal
+    spec:
+      containers:
+      - name: secret-app-seal
+        image: secret-app-seal:latest
+        volumeMounts:
+        - name: key-volume
+          mountPath: /app
+      volumes:
+      - name: key-volume
+        persistentVolumeClaim:
+          claimName: key-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secret-app-seal-service
+spec:
+  selector:
+    app: secret-app-seal
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP

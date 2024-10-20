@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: secret-app-cert
+  namespace: default
+spec:
+  secretName: secret-app-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: localhost
+  dnsNames:
+  - localhost

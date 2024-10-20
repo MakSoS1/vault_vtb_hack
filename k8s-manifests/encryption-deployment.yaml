@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-app-encryption
+spec:
+  replicas: 2  # Реплики для отказоустойчивости
+  selector:
+    matchLabels:
+      app: secret-app-encryption
+  template:
+    metadata:
+      labels:
+        app: secret-app-encryption
+    spec:
+      containers:
+      - name: secret-app-encryption
+        image: secret-app-encryption:latest
+        ports:
+        - containerPort: 8001  # Шифрование может слушать на другом порту
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secret-app-encryption-service
+spec:
+  selector:
+    app: secret-app-encryption
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+  type: ClusterIP

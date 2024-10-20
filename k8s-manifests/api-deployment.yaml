@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-app-api
+spec:
+  replicas: 3  # 3 реплики для отказоустойчивости
+  selector:
+    matchLabels:
+      app: secret-app-api
+  template:
+    metadata:
+      labels:
+        app: secret-app-api
+    spec:
+      containers:
+      - name: secret-app-api
+        image: secret-app-api:latest  # Образ вашего приложения
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: templates-volume
+          mountPath: /app/templates  # Монтируем папку для шаблонов
+        - name: config-volume
+          mountPath: /app/config  # Монтируем конфигурационный файл
+        - name: secret-volume
+          mountPath: /app/secret  # Монтируем секреты
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials  # Секрет с данными пользователя базы данных
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials  # Секрет с паролем базы данных
+              key: password
+        livenessProbe:
+          httpGet:
+            path: /healthz  # Эндпоинт для проверки состояния
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /readiness  # Эндпоинт для проверки готовности
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: templates-volume
+        persistentVolumeClaim:
+          claimName: templates-pvc  # PVC для хранения шаблонов
+      - name: config-volume
+        configMap:
+          name: app-config  # Монтируем ConfigMap с конфигурацией
+      - name: secret-volume
+        secret:
+          secretName: db-credentials  # Монтируем секреты
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secret-app-api-service
+spec:
+  selector:
+    app: secret-app-api
+  ports:
+    - protocol: TCP
+      port: 80  # Внешний порт
+      targetPort: 8000  # Порт в контейнере
+  type: LoadBalancer  # Сетевой балансировщик нагрузки
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: templates-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce  # Тип доступа
+  resources:
+    requests:
+      storage: 1Gi  # Размер хранилища для шаблонов
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  config.yaml: |
+    setting1: value1
+    setting2: value2
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+type: Opaque
+data:
+  username: bXktZGItdXNlcg==  # base64 кодировка для 'my-db-user'
+  password: bXktZGItcGFzc3dvcmQ=  # base64 кодировка для 'my-db-password'

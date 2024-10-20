@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-app-config
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secret-app-config
+  template:
+    metadata:
+      labels:
+        app: secret-app-config
+    spec:
+      containers:
+      - name: secret-app-config
+        image: secret-app-config:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secret-app-config-service
+spec:
+  selector:
+    app: secret-app-config
+  ports:
+    - protocol: TCP
+      port: 8080  # Конфигурация может использовать этот порт
+      targetPort: 8080
+  type: ClusterIP

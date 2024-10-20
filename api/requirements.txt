@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-jose
+passlib[bcrypt]
+cassandra-driver
+jinja2
+cryptography
+pyjwt
+python-multipart

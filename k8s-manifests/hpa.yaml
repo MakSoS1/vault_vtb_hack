@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: secret-app-api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: secret-app-api
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80

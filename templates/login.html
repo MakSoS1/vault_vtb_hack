@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Вход</h2>
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        <form action="/login" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="username">Имя пользователя:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Введите имя пользователя">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </form>
+        <p class="text-center mt-3">Нет аккаунта? <a href="/register">Регистрация</a></p>
+    </div>
+    <!-- Подключение Bootstrap JS и зависимостей -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
