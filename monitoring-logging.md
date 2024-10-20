@@ -9,31 +9,6 @@
 - **Prometheus**: Служит для сбора метрик, таких как загрузка CPU, использование памяти, состояние подов и количество запросов к API.
 - **Grafana**: Предоставляет удобную визуализацию собранных метрик и позволяет настроить дашборды для отслеживания состояния системы.
 
-#### Установка и настройка:
-
-1. Установка Prometheus:
-   ```bash
-   helm install prometheus prometheus-community/prometheus
-   ```
-
-2. Установка Grafana:
-   ```bash
-   helm install grafana grafana/grafana
-   ```
-
-3. Настройка метрик для подов и сервисов через аннотации в манифестах Kubernetes:
-   ```yaml
-   metadata:
-     annotations:
-       prometheus.io/scrape: 'true'
-       prometheus.io/port: '8000'
-   ```
-
-4. Проброс порта для доступа к Grafana:
-   ```bash
-   kubectl port-forward svc/grafana 3000:3000
-   ```
-   Перейдите на `http://localhost:3000`, чтобы получить доступ к дашбордам.
 
 ### 2. Логирование
 
@@ -42,29 +17,6 @@
 - **Fluentd**: Сбор и пересылка логов из подов и сервисов в Elasticsearch.
 - **Elasticsearch**: Хранилище логов, в котором можно выполнять быстрый поиск и анализ данных.
 - **Kibana**: Визуализация логов, настройка дашбордов и проведение аналитики по логам.
-
-#### Установка и настройка:
-
-1. Установка Elasticsearch:
-   ```bash
-   helm install elasticsearch elastic/elasticsearch
-   ```
-
-2. Установка Fluentd:
-   ```bash
-   kubectl apply -f fluentd-config.yaml
-   ```
-
-3. Установка Kibana:
-   ```bash
-   helm install kibana elastic/kibana
-   ```
-
-4. Проброс порта для доступа к Kibana:
-   ```bash
-   kubectl port-forward svc/kibana 5601:5601
-   ```
-   Перейдите на `http://localhost:5601` для доступа к интерфейсу Kibana.
 
 ### 3. Пример конфигурации Fluentd
 
