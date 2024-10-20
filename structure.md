@@ -31,10 +31,6 @@
 │   ├── encryption/
 │   ├── models/
 │   └── seal/
-└── mds/
-    ├── installation.md
-    ├── architecture.md
-    └── usage.md
 ```
 
 ### Описание файлов и манифестов:
